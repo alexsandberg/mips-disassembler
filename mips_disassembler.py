@@ -82,15 +82,17 @@ instruction_list = [
 
 
 def process_r_type(instruction):
-    print(instruction)
     fields = {}
+    fields['binary'] = instruction['binary']
     fields['opcode'] = instruction['binary'][0:6]
     fields['rs'] = instruction['binary'][6:11]
     fields['rt'] = instruction['binary'][11:16]
     fields['rd'] = instruction['binary'][16:21]
     fields['shamt'] = instruction['binary'][21:26]
     fields['funct'] = instruction['binary'][26:]
-    # instruction_string = register_table[]
+    instruction_string = funct_code_table[fields['funct']]
+    instruction_string += f' {register_table[fields["rd"]]}, {register_table[fields["rs"]]}, {register_table[fields["rt"]]}'
+    fields['MIPS'] = instruction_string
     print(fields)
 
 
