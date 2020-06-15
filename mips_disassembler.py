@@ -1,38 +1,13 @@
 # MIPS Disassembler
 
-code_table = {
-    'add': {
-        'opcode': '000000',
-        'funct': '100000'
-    },
-    'and': {
-        'opcode': '000000',
-        'funct': '100100'
-    },
-    'j': {
-        'opcode': None,
-        'funct': None
-    },
-    'jr': {
-        'opcode': '000000',
-        'funct': '001000'
-    },
-    'lw': {
-        'opcode': None,
-        'funct': '100011'
-    },
-    'ori': {
-        'opcode': None,
-        'funct': '001101'
-    },
-    'sub': {
-        'opcode': '000000',
-        'funct': '100010'
-    },
-    'sw': {
-        'opcode': None,
-        'funct': '101011'
-    }
+funct_code_table = {
+    '100000': 'add',
+    '100100': 'and',
+    '001000': 'jr',
+    '100011': 'lw',
+    '001101': 'ori',
+    '100010': 'sub',
+    '101011': 'sw'
 }
 
 register_table = {
@@ -115,7 +90,7 @@ def process_r_type(instruction):
     fields['rd'] = instruction['binary'][16:21]
     fields['shamt'] = instruction['binary'][21:26]
     fields['funct'] = instruction['binary'][26:]
-
+    # instruction_string = register_table[]
     print(fields)
 
 
