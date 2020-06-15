@@ -105,8 +105,19 @@ def process_r_type(instruction):
 
 
 def process_i_type(instruction):
-    # print(instruction)
-    pass
+    fields = {}
+    fields['binary'] = instruction['binary']
+    fields['opcode'] = instruction['binary'][0:6]
+    fields['rs'] = instruction['binary'][6:11]
+    fields['rt'] = instruction['binary'][11:16]
+    fields['immediate'] = instruction['binary'][16:]
+
+    instruction_string = funct_code_table[fields['opcode']]
+    instruction_string += f' {register_table[fields["rt"]]}, {register_table[fields["rs"]]}, {fields["immediate"]}'
+
+    fields['MIPS'] = instruction_string
+
+    return fields
 
 
 def process_j_type(instruction):
