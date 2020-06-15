@@ -80,6 +80,42 @@ instruction_list = [
     }
 ]
 
+hex_dict = {
+    '0000': '0',
+    '0001': '1',
+    '0010': '2',
+    '0011': '3',
+    '0100': '4',
+    '0101': '5',
+    '0110': '6',
+    '0111': '7',
+    '1000': '8',
+    '1001': '9',
+    '1010': 'A',
+    '1011': 'B',
+    '1100': 'C',
+    '1101': 'D',
+    '1110': 'E',
+    '1111': 'F'
+}
+
+
+def binary_to_hex(binary):
+    hex_str = ''
+    count = -4
+    prev = len(binary)
+    byte = binary[-4:prev]
+
+    while abs(count) <= len(binary):
+        byte = binary[count:prev]
+        hex_str = hex_dict[byte] + hex_str
+        prev = count
+        count -= 4
+
+    hex_str = '0x' + hex_str
+
+    return hex_str
+
 
 def process_r_type(instruction):
     fields = {}
@@ -113,9 +149,13 @@ def process_i_type(instruction):
     fields['immediate'] = instruction['binary'][16:]
 
     instruction_string = funct_code_table[fields['opcode']]
-    instruction_string += f' {register_table[fields["rt"]]}, {register_table[fields["rs"]]}, {fields["immediate"]}'
+    if funct_code_table[fields['opcode']] == 'ori':
+        instruction_string += f' {register_table[fields["rt"]]}, {register_table[fields["rs"]]}, {binary_to_hex(fields["immediate"])}'
+    else:
+        instruction_string += f' {register_table[fields["rt"]]}, {binary_to_hex(fields["immediate"])}({register_table[fields["rs"]]})'
 
     fields['MIPS'] = instruction_string
+    # print(fields)
 
     return fields
 
