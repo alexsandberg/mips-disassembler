@@ -3,6 +3,7 @@
 funct_code_table = {
     '100000': 'add',
     '100100': 'and',
+    '000010': 'j',
     '001000': 'jr',
     '100011': 'lw',
     '001101': 'ori',
@@ -161,8 +162,13 @@ def process_i_type(instruction):
 
 
 def process_j_type(instruction):
-    # print(instruction)
-    pass
+    fields = {}
+    fields['binary'] = instruction['binary']
+    fields['opcode'] = instruction['binary'][0:6]
+    fields['address'] = instruction['binary'][6:]
+    instruction_string = f'{funct_code_table[fields["opcode"]]} {binary_to_hex(fields["address"])}'
+    fields['MIPS'] = instruction_string
+    return fields
 
 
 def sort_instructions(instruction_list):
