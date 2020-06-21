@@ -1,5 +1,9 @@
 # MIPS Disassembler
+# Author: Alex Sandberg-Bernard
+# Computer Organization – EN.605.204.81.SU20
+# Johns Hopkins University
 
+# function code lookup table
 funct_code_table = {
     '100000': 'add',
     '100100': 'and',
@@ -11,6 +15,7 @@ funct_code_table = {
     '101011': 'sw'
 }
 
+# MIPS register code lookup
 register_table = {
     '00000': '$zero',
     '00001': '$at',
@@ -46,6 +51,7 @@ register_table = {
     '11111': '$ra',
 }
 
+# sample instructions
 instruction_list = [
     {
         'binary': '00000001101011100101100000100100',
@@ -81,6 +87,7 @@ instruction_list = [
     }
 ]
 
+# hex to binary lookup
 hex_dict = {
     '0000': '0',
     '0001': '1',
@@ -102,11 +109,17 @@ hex_dict = {
 
 
 def binary_to_hex(binary):
+    '''
+    Converts a binary string to hexidecimal in the form 0xnnnn.
+    Binary string length must be multiple of 4.
+    '''
     hex_str = ''
     count = -4
     prev = len(binary)
     byte = binary[-4:prev]
 
+    # slice binary string from the right into bytes
+    # and use lookup for hex conversion
     while abs(count) <= len(binary):
         byte = binary[count:prev]
         hex_str = hex_dict[byte] + hex_str
@@ -119,6 +132,11 @@ def binary_to_hex(binary):
 
 
 def process_r_type(instruction):
+    '''
+    Processes R-type MIPS instructions. Returns dict containing
+    original binary, instruction components, and MIPS string.
+    '''
+
     fields = {}
     fields['binary'] = instruction['binary']
     fields['opcode'] = instruction['binary'][0:6]
@@ -142,6 +160,11 @@ def process_r_type(instruction):
 
 
 def process_i_type(instruction):
+    '''
+    Processes I-type MIPS instructions. Returns dict containing
+    original binary, instruction components, and MIPS string.
+    '''
+
     fields = {}
     fields['binary'] = instruction['binary']
     fields['opcode'] = instruction['binary'][0:6]
@@ -156,12 +179,16 @@ def process_i_type(instruction):
         instruction_string += f' {register_table[fields["rt"]]}, {binary_to_hex(fields["immediate"])}({register_table[fields["rs"]]})'
 
     fields['MIPS'] = instruction_string
-    # print(fields)
 
     return fields
 
 
 def process_j_type(instruction):
+    '''
+    Processes J-type MIPS instructions. Returns dict containing
+    original binary, instruction components, and MIPS string.
+    '''
+
     fields = {}
     fields['binary'] = instruction['binary']
     fields['opcode'] = instruction['binary'][0:6]
@@ -172,6 +199,10 @@ def process_j_type(instruction):
 
 
 def sort_instructions(instruction_list):
+    '''
+    Sorts through instructions and calls processing functions
+    based on instruction type. Returns array of processed results.
+    '''
     results = []
     for instruction in instruction_list:
         if (instruction['type'] == 'R'):
@@ -183,6 +214,23 @@ def sort_instructions(instruction_list):
     return results
 
 
+# process instructions and print results
 results = sort_instructions(instruction_list)
 for i, result in enumerate(results):
-    print(f'{i+1}. {result}')
+    print(f'{i+1}.')
+    print(f'Full result: {result}')
+    print(f'MIPS instruction: {result["MIPS"]}')
+
+# write results to output file
+with open('disassembler_results.txt', mode='w') as output_txt:
+
+    # output header
+    output_txt.write(f'\nAlex Sandberg-Bernard\n')
+    output_txt.write(f'\nComputer Organization – EN.605.204.81.SU20\n')
+    output_txt.write(f'\nModule 4 – MIPS Disassembler Results\n\n')
+
+    # write results of each set of trials
+    for i, result in enumerate(results):
+        output_txt.write(f'{i+1}.\n')
+        output_txt.write(f'Full result: {result}\n')
+        output_txt.write(f'MIPS instruction: {result["MIPS"]}\n\n')
